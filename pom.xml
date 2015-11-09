@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.mycore.sword</groupId>
     <artifactId>easy-sword2-lib</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>SWORD v2 :: Common Server Library</name>
     <description>
