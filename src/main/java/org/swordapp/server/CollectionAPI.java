@@ -4,6 +4,8 @@ import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -115,7 +117,10 @@ public class CollectionAPI extends SwordAPIEndpoint {
             boolean isBinaryOnly = !isMultipart && !isEntryOnly;
 
             // get the common HTTP headers before leaping into the deposit type specific processes
-            String slug = req.getHeader("Slug");
+
+            // According to http://www.ietf.org/rfc/rfc5023.txt Section 9.7.1 The Slug must be the percent encoded
+            // UTF-8 byte sequence of the text to use as the value.
+            String slug = new URLCodec("UTF-8").decode(req.getHeader("Slug"));
             boolean inProgress = this.getInProgress(req);
 
             deposit = new Deposit();
@@ -189,6 +194,9 @@ public class CollectionAPI extends SwordAPIEndpoint {
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden
             resp.sendError(403);
+        }
+        catch (DecoderException e) {
+            throw new ServletException(e);
         }
         finally {
             // get rid of any temp files used
