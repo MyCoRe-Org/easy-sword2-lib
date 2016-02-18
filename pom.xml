@@ -5,6 +5,11 @@
     <artifactId>easy-sword2-lib</artifactId>
     <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <parent>
+        <artifactId>mycore-parent</artifactId>
+        <groupId>org.mycore</groupId>
+        <version>28-SNAPSHOT</version>
+    </parent>
     <name>SWORD v2 :: Common Server Library</name>
     <description>
         Common Server Library with interfaces to be implemented by servers
