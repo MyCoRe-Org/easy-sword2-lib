@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.mycore.sword</groupId>
     <artifactId>easy-sword2-lib</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
     <parent>
         <artifactId>mycore-parent</artifactId>
         <groupId>org.mycore</groupId>
-        <version>28-SNAPSHOT</version>
+        <version>28</version>
     </parent>
     <name>SWORD v2 :: Common Server Library</name>
     <description>
@@ -17,7 +17,7 @@
     </description>
     <scm>
         <developerConnection>scm:git:https://github.com/paschty/${project.artifactId}</developerConnection>
-        <tag>HEAD</tag>
+        <tag>easy-sword2-lib-1.0.2</tag>
     </scm>
     <repositories>
         <repository>
