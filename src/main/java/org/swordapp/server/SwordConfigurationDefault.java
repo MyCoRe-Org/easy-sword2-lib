@@ -37,8 +37,8 @@ public class SwordConfigurationDefault implements SwordConfiguration {
         return null;
     }
 
-    public int getMaxUploadSize() {
-        return -1;
+    public long getMaxUploadSize() {
+        return Long.MAX_VALUE;
     }
 
     public String getAlternateUrl() {

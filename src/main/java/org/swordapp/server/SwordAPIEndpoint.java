@@ -1,5 +1,23 @@
 package org.swordapp.server;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.security.NoSuchAlgorithmException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Element;
@@ -13,17 +31,6 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.security.NoSuchAlgorithmException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public class SwordAPIEndpoint {
     protected SwordConfiguration config;
@@ -174,7 +181,7 @@ public class SwordAPIEndpoint {
         deposit.setFile(file);
 
         long fLength = file.length(); // in bytes
-        if ((config.getMaxUploadSize() != -1) && (fLength > config.getMaxUploadSize())) {
+        if ((fLength > config.getMaxUploadSize())) {
             String msg = "The uploaded file exceeded the maximum file size this server will accept (the file is " + fLength
                     + " bytes but the server will only accept files as large as " + config.getMaxUploadSize() + " bytes)";
             throw new SwordError(UriRegistry.ERROR_MAX_UPLOAD_SIZE_EXCEEDED, msg);
