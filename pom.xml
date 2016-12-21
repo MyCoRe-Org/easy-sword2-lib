@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.mycore.sword</groupId>
     <artifactId>easy-sword2-lib</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <parent>
         <artifactId>mycore-parent</artifactId>
         <groupId>org.mycore</groupId>
-        <version>29</version>
+        <version>30-SNAPSHOT</version>
     </parent>
     <name>SWORD v2 :: Common Server Library</name>
     <description>
@@ -17,7 +17,7 @@
     </description>
     <scm>
         <developerConnection>scm:git:https://github.com/MyCoRe-Org/easy-sword2-lib</developerConnection>
-        <tag>easy-sword2-lib-1.0.3</tag>
+        <tag>HEAD</tag>
     </scm>
     <repositories>
         <repository>
