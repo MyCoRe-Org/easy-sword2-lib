@@ -16,10 +16,18 @@
         wishing to provide SWORD v2 support
     </description>
     <scm>
-        <developerConnection>scm:git:https://github.com/paschty/${project.artifactId}</developerConnection>
+        <developerConnection>scm:git:https://github.com/MyCoRe-Org/easy-sword2-lib</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <repositories>
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>MyCoRe HQ</id>
             <url>http://artifactory.mycore.de/mycore-releases</url>
@@ -39,6 +47,17 @@
         </repository>
     </repositories>
     <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
         <pluginRepository>
             <id>MyCoRe HQ</id>
             <url>http://artifactory.mycore.de/mycore-releases</url>
