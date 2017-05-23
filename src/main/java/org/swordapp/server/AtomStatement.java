@@ -3,9 +3,9 @@ package org.swordapp.server;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Category;
-import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.apache.abdera.model.Link;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;
@@ -60,6 +60,10 @@ public class AtomStatement extends Statement {
             entry.setTitle("Resource " + resource.getUri());
             entry.setSummary("Resource Part");
             entry.setUpdated(new Date());
+
+            for (String linkHref : resource.getSelfLinks()) {
+                entry.addLink(linkHref, Link.REL_SELF);
+            }
         }
 
         // create an entry for each original deposit
@@ -74,6 +78,10 @@ public class AtomStatement extends Statement {
             entry.setTitle("Original Deposit " + deposit.getUri());
             entry.setSummary("Original Deposit");
             entry.setUpdated(new Date());
+
+            for (String linkHref : deposit.getSelfLinks()) {
+                entry.addLink(linkHref, Link.REL_SELF);
+            }
 
             entry.setContent(new IRI(deposit.getUri()), deposit.getMediaType());
             entry.addCategory(UriRegistry.SWORD_TERMS_NAMESPACE, UriRegistry.SWORD_ORIGINAL_DEPOSIT, "Original Deposit");
