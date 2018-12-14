@@ -305,6 +305,14 @@ public class SwordAPIEndpoint {
         if (packaging == null || "".equals(packaging)) {
             packaging = UriRegistry.PACKAGE_BINARY;
         }
+        long len = -1L;
+        if (req.getHeader("Content-Length") != null) {
+            try {
+                len = Long.parseLong(req.getHeader("Content-Length"));
+            }
+            catch (NumberFormatException e) {}
+        }
+
         InputStream file = req.getInputStream();
 
         // now let's interpret and deal with the headers that we have
@@ -318,6 +326,7 @@ public class SwordAPIEndpoint {
         deposit.setPackaging(packaging);
         deposit.setInputStream(file);
         deposit.setMimeType(contentType);
+        deposit.setContentLength(len);
 
         try {
             this.storeAndCheckBinary(deposit, this.config);
