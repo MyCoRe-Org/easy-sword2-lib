@@ -19,6 +19,7 @@ public class Deposit {
     private boolean inProgress = false;
     private boolean metadataRelevant = true;
     private File file = null;
+    private long contentLength = -1L;
 
     public Deposit() {}
 
@@ -139,5 +140,13 @@ public class Deposit {
 
     public void setMetadataRelevant(boolean metadataRelevant) {
         this.metadataRelevant = metadataRelevant;
+    }
+
+    public void setContentLength(long length) {
+        this.contentLength = length;
+    }
+
+    public long getContentLength() {
+        return contentLength;
     }
 }

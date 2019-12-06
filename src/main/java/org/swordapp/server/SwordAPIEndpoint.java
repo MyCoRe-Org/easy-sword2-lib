@@ -24,6 +24,7 @@ import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.parser.Parser;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.ParameterParser;
@@ -211,8 +212,8 @@ public class SwordAPIEndpoint {
 
     protected void addDepositPropertiesFromMultipart(Deposit deposit, HttpServletRequest req) throws ServletException, IOException, SwordError {
         // Parse the request for files (using the fileupload commons library)
-        List<DiskFileItem> items = this.getPartsFromRequest(req);
-        for (DiskFileItem item : items) {
+        List<FileItem> items = this.getPartsFromRequest(req);
+        for (FileItem item : items) {
             // find out which part we are looking at
             String contentDisposition = item.getHeaders().getHeader("Content-Disposition");
             String name = this.getContentDispositionValue(contentDisposition, "name");
@@ -305,6 +306,14 @@ public class SwordAPIEndpoint {
         if (packaging == null || "".equals(packaging)) {
             packaging = UriRegistry.PACKAGE_BINARY;
         }
+        long len = -1L;
+        if (req.getHeader("Content-Length") != null) {
+            try {
+                len = Long.parseLong(req.getHeader("Content-Length"));
+            }
+            catch (NumberFormatException e) {}
+        }
+
         InputStream file = req.getInputStream();
 
         // now let's interpret and deal with the headers that we have
@@ -318,6 +327,7 @@ public class SwordAPIEndpoint {
         deposit.setPackaging(packaging);
         deposit.setInputStream(file);
         deposit.setMimeType(contentType);
+        deposit.setContentLength(len);
 
         try {
             this.storeAndCheckBinary(deposit, this.config);
@@ -377,7 +387,7 @@ public class SwordAPIEndpoint {
         return parameters.get(key);
     }
 
-    protected List<DiskFileItem> getPartsFromRequest(HttpServletRequest request) throws ServletException {
+    protected List<FileItem> getPartsFromRequest(HttpServletRequest request) throws ServletException {
         try {
             // Create a factory for disk-based file items
             FileItemFactory factory = new DiskFileItemFactory();
@@ -386,7 +396,7 @@ public class SwordAPIEndpoint {
             ServletFileUpload upload = new ServletFileUpload(factory);
 
             // Parse the request
-            List<DiskFileItem> items = upload.parseRequest(request);
+            List<FileItem> items = upload.parseRequest(request);
 
             return items;
         }
