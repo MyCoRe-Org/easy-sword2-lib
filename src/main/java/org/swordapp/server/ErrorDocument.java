@@ -1,25 +1,32 @@
 package org.swordapp.server;
 
-import nu.xom.Attribute;
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Serializer;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jdom2.Attribute;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
+
 public class ErrorDocument {
+
     private String errorUri = null;
     private Map<String, Integer> errorCodes = new HashMap<String, Integer>();
     private String summary = null;
     private String verboseDescription = null;
     private int status;
+
+    public static final Namespace SWORD_NS = Namespace.getNamespace(UriRegistry.SWORD_PREFIX,
+        UriRegistry.SWORD_TERMS_NAMESPACE);
+
+    public static final Namespace ATOM_NS = Namespace.getNamespace(UriRegistry.ATOM_PREFIX, UriRegistry.ATOM_NAMESPACE);
 
     public ErrorDocument(String errorUri) {
         this(errorUri, -1, null, null);
@@ -65,66 +72,61 @@ public class ErrorDocument {
         }
     }
 
-    public void writeTo(Writer out, SwordConfiguration config) throws IOException, SwordServerException {
+    public void writeTo(Writer out, SwordConfiguration config) throws IOException {
         // do the XML serialisation
-        Element error = new Element("sword:error", UriRegistry.SWORD_TERMS_NAMESPACE);
-        error.addAttribute(new Attribute("href", this.errorUri));
+        Element error = new Element("error", SWORD_NS);
+        error.setAttribute(new Attribute("href", this.errorUri));
 
         // write some boiler-plate text into the document
-        Element title = new Element("atom:title", UriRegistry.ATOM_NAMESPACE);
-        title.appendChild("ERROR");
-        Element updates = new Element("atom:updated", UriRegistry.ATOM_NAMESPACE);
+        Element title = new Element("title", ATOM_NS);
+        title.setText("ERROR");
+        Element updates = new Element("updated", ATOM_NS);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        updates.appendChild(sdf.format(new Date()));
-        Element generator = new Element("atom:generator", UriRegistry.ATOM_NAMESPACE);
-        generator.addAttribute(new Attribute("uri", config.generator()));
-        generator.addAttribute(new Attribute("version", config.generatorVersion()));
+        updates.setText(sdf.format(new Date()));
+        Element generator = new Element("generator", ATOM_NS);
+        generator.setAttribute(new Attribute("uri", config.generator()));
+        generator.setAttribute(new Attribute("version", config.generatorVersion()));
         if (config.administratorEmail() != null) {
-            generator.appendChild(config.administratorEmail());
+            generator.setText(config.administratorEmail());
         }
-        Element treatment = new Element("sword:treatment", UriRegistry.SWORD_TERMS_NAMESPACE);
-        treatment.appendChild("Processing failed");
+        Element treatment = new Element("treatment", SWORD_NS);
+        treatment.setText("Processing failed");
 
-        error.appendChild(title);
-        error.appendChild(updates);
-        error.appendChild(generator);
-        error.appendChild(treatment);
+        error.addContent(title);
+        error.addContent(updates);
+        error.addContent(generator);
+        error.addContent(treatment);
 
         // now add the operational bits
         if (this.summary != null) {
-            Element summary = new Element("atom:summary", UriRegistry.ATOM_NAMESPACE);
-            summary.appendChild(this.summary);
-            error.appendChild(summary);
+            Element summary = new Element("summary", ATOM_NS);
+            summary.setText(this.summary);
+            error.addContent(summary);
         }
 
         if (this.verboseDescription != null) {
-            Element vd = new Element("sword:verboseDescription", UriRegistry.SWORD_TERMS_NAMESPACE);
-            vd.appendChild(this.verboseDescription);
-            error.appendChild(vd);
+            Element vd = new Element("verboseDescription", SWORD_NS);
+            vd.setText(this.verboseDescription);
+            error.addContent(vd);
         }
 
         String alternate = config.getAlternateUrl();
         String altContentType = config.getAlternateUrlContentType();
         if (alternate != null && !"".equals(alternate)) {
-            Element altLink = new Element("atom:link", UriRegistry.ATOM_NAMESPACE);
-            altLink.addAttribute(new Attribute("rel", "alternate"));
+            Element altLink = new Element("link", ATOM_NS);
+            altLink.setAttribute(new Attribute("rel", "alternate"));
             if (altContentType != null && !"".equals(altContentType)) {
-                altLink.addAttribute(new Attribute("type", altContentType));
+                altLink.setAttribute(new Attribute("type", altContentType));
             }
-            altLink.addAttribute(new Attribute("href", alternate));
-            error.appendChild(altLink);
+            altLink.setAttribute(new Attribute("href", alternate));
+            error.addContent(altLink);
         }
 
-        try {
-            // now get it written out
-            Document doc = new Document(error);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Serializer serializer = new Serializer(baos, "ISO-8859-1");
-            serializer.write(doc);
-            out.write(baos.toString());
-        }
-        catch (UnsupportedEncodingException e) {
-            throw new SwordServerException(e);
-        }
+        // now get it written out
+        Document doc = new Document(error);
+        Format format = Format.getCompactFormat();
+        format.setEncoding(StandardCharsets.ISO_8859_1.name());
+        XMLOutputter xout = new XMLOutputter(format);
+        xout.output(doc, out);
     }
 }

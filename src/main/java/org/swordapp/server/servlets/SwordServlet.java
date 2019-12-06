@@ -46,7 +46,7 @@ public class SwordServlet extends HttpServlet {
             }
         } else {
             try {
-                Object obj = Class.forName(className).newInstance();
+                Object obj = Class.forName(className).getDeclaredConstructor().newInstance();
                 log.info("Using " + className + " as '" + paramName + "'");
                 return obj;
             }
