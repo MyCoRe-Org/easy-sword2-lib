@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 public class Deposit {
     private SwordEntry entry = null;
@@ -68,7 +69,7 @@ public class Deposit {
             if (inputStream == null && file == null) {
                 return null;
             } else if (inputStream == null && file != null) {
-                return new FileInputStream(this.file);
+                return Files.newInputStream(this.file.toPath());
             } else if (inputStream != null) {
                 return inputStream;
             }

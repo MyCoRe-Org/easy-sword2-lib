@@ -338,42 +338,37 @@ public class SwordAPIEndpoint {
     }
 
     protected void swordError(HttpServletRequest req, HttpServletResponse resp, SwordError e) throws IOException, ServletException {
-        try {
-            if (!this.config.returnErrorBody() || !e.hasBody()) {
-                ErrorDocument doc = new ErrorDocument(e.getErrorUri(), e.getStatus());
-                resp.setStatus(doc.getStatus());
-                return;
-            }
-
-            // treatment is either the default value in the ErrorDocument OR the error message if it exists
-            String treatment = e.getMessage();
-
-            // verbose description is the stack trace if allowed, otherwise null
-            String verbose = null;
-            if (this.config.returnStackTraceInError()) {
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                e.printStackTrace(pw);
-                verbose = sw.getBuffer().toString();
-            }
-
-            ErrorDocument doc;
-            if (treatment == null) {
-                doc = new ErrorDocument(e.getErrorUri(), e.getStatus(), verbose);
-            } else {
-                doc = new ErrorDocument(e.getErrorUri(), e.getStatus(), treatment, verbose);
-            }
-
-            // now write the response
+        if (!this.config.returnErrorBody() || !e.hasBody()) {
+            ErrorDocument doc = new ErrorDocument(e.getErrorUri(), e.getStatus());
             resp.setStatus(doc.getStatus());
-            resp.setHeader("Content-Type", "text/xml");
+            return;
+        }
 
-            doc.writeTo(resp.getWriter(), this.config);
-            resp.getWriter().flush();
+        // treatment is either the default value in the ErrorDocument OR the error message if it exists
+        String treatment = e.getMessage();
+
+        // verbose description is the stack trace if allowed, otherwise null
+        String verbose = null;
+        if (this.config.returnStackTraceInError()) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            verbose = sw.getBuffer().toString();
         }
-        catch (SwordServerException sse) {
-            throw new ServletException(sse);
+
+        ErrorDocument doc;
+        if (treatment == null) {
+            doc = new ErrorDocument(e.getErrorUri(), e.getStatus(), verbose);
+        } else {
+            doc = new ErrorDocument(e.getErrorUri(), e.getStatus(), treatment, verbose);
         }
+
+        // now write the response
+        resp.setStatus(doc.getStatus());
+        resp.setHeader("Content-Type", "text/xml");
+
+        doc.writeTo(resp.getWriter(), this.config);
+        resp.getOutputStream().flush();
     }
 
     protected String getContentDispositionValue(String contentDisposition, String key) {
