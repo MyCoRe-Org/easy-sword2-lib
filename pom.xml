@@ -30,6 +30,7 @@
     <!-- not our code, not our rules -->
     <forbiddenapis.skip>true</forbiddenapis.skip>
     <license.name>apache_v2</license.name>
+    <jetty.version>9.4.20.v20190813</jetty.version>
   </properties>
   <repositories>
     <repository>
@@ -87,6 +88,36 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-1.2-api</artifactId>
       <version>2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.swordapp</groupId>
+      <artifactId>sword2-client</artifactId>
+      <version>0.9.3</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>xom</groupId>
