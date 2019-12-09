@@ -29,8 +29,8 @@
   <properties>
     <!-- not our code, not our rules -->
     <forbiddenapis.skip>true</forbiddenapis.skip>
-    <license.name>apache_v2</license.name>
     <jetty.version>9.4.20.v20190813</jetty.version>
+    <license.name>apache_v2</license.name>
   </properties>
   <repositories>
     <repository>
@@ -71,16 +71,15 @@
       <version>2.12.1</version>
     </dependency>
     <dependency>
-      <groupId>org.swordapp</groupId>
-      <artifactId>sword2-client</artifactId>
-      <version>0.9.3</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.servlet</groupId>
-          <artifactId>servlet-api</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom2</artifactId>
+      <version>2.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>4.0.3</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -101,15 +100,16 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jdom</groupId>
-      <artifactId>jdom2</artifactId>
-      <version>2.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <version>4.0.3</version>
-      <scope>provided</scope>
+      <groupId>org.swordapp</groupId>
+      <artifactId>sword2-client</artifactId>
+      <version>0.9.3</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <developers>
